@@ -414,6 +414,78 @@ a.primary, a.secondary {
   gap: 16px;
 }
 
+.browser-registrations {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.browser-registrations-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.browser-registrations-header h3 {
+  margin: 0;
+  color: #0b3b58;
+  font-size: 16px;
+}
+
+.browser-registrations-header span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.browser-registrations-list {
+  display: grid;
+  gap: 10px;
+}
+
+.browser-registration-card {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.browser-registration-card h4 {
+  margin: 0 0 6px;
+  color: #0b3b58;
+  font-size: 15px;
+}
+
+.browser-registration-card p {
+  margin: 3px 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.browser-registration-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.browser-registration-actions .secondary,
+.browser-registration-actions .primary {
+  width: 100%;
+  font-size: 13px;
+}
+
+.mini-note {
+  display: block;
+  font-size: 12px;
+  text-align: center;
+}
+
 .success-banner {
   padding: 16px;
   border: 1px solid rgba(4, 120, 87, 0.2);

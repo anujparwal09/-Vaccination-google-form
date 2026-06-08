@@ -40,7 +40,6 @@ const HEADERS = [
   "Registration Date",
   "Age",
   "Gender",
-  "Batch Name",
   "Payment Mode",
   "UPI ID",
   "Payment Screenshot",
@@ -161,8 +160,6 @@ function normalizeRegistration(body) {
     gender: String(body.gender || "").trim(),
     phone: String(body.phone || "").trim(),
     email: String(body.email || "").trim(),
-    address: String(body.address || "").trim(),
-    batchName: String(body.batchName || body.batchNumber || "").trim(),
     vaccineId: vaccine ? vaccine.id : "",
     vaccine: vaccine ? vaccine.name : "",
     dose: String(body.dose || "").trim(),
@@ -215,7 +212,6 @@ function toExcelRow(record) {
     record.createdAt,
     record.age,
     record.gender,
-    record.batchName || record.batchNumber || "",
     record.paymentMode,
     record.upiId || "",
     record.paymentScreenshot || "",
@@ -255,7 +251,6 @@ async function saveExcel(records) {
     { width: 24 }, // Registration Date
     { width: 8 },  // Age
     { width: 12 }, // Gender
-    { width: 16 }, // Batch Name
     { width: 16 }, // Payment Mode
     { width: 16 }, // UPI ID
     { width: 24 }, // Payment Screenshot
@@ -263,7 +258,7 @@ async function saveExcel(records) {
     { width: 18 }, // Verification Status
     { width: 18 }  // Verified At
   ];
-  sheet.autoFilter = { from: "A1", to: "S1" };
+  sheet.autoFilter = { from: "A1", to: "R1" };
   sheet.eachRow((row) => {
     row.eachCell((cell) => {
       cell.border = {
@@ -290,7 +285,6 @@ function publicRecord(record) {
     gender: record.gender,
     phone: record.phone,
     vaccine: record.vaccine,
-    batchName: record.batchName || record.batchNumber || "",
     dose: record.dose,
     paymentAmount: record.paymentAmount,
     paymentMode: record.paymentMode,
@@ -309,7 +303,6 @@ function adminRecord(record) {
   return {
     ...publicRecord(record),
     email: record.email,
-    address: record.address,
     upiId: record.upiId,
     paymentScreenshotName: record.paymentScreenshot || "",
     paymentScreenshotDataUrl: readPaymentScreenshot(record),

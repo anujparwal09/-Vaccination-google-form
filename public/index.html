@@ -62,8 +62,6 @@
             </label>
             <label>Phone <input name="phone" required autocomplete="tel"></label>
             <label>Email <input name="email" type="email" autocomplete="email"></label>
-            <label class="wide">Address <textarea name="address" rows="3"></textarea></label>
-            <label>Batch name <input name="batchName" placeholder="Batch name"></label>
           </fieldset>
           <fieldset class="step-card">
             <legend><span>Step 2</span> Vaccination Details</legend>
@@ -127,6 +125,13 @@
           </dl>
           <a id="receiptLink" class="secondary hidden" href="#" target="_blank" rel="noopener">Download Receipt</a>
         </div>
+        <section id="browserRegistrationsSection" class="browser-registrations hidden">
+          <div class="browser-registrations-header">
+            <h3>Your Submitted Registrations</h3>
+            <span id="browserRegistrationCount">0 records</span>
+          </div>
+          <div id="browserRegistrationsList" class="browser-registrations-list"></div>
+        </section>
       </aside>
     </main>
     <script src="app.js"></script>

@@ -14,10 +14,15 @@ const paymentQrImage = document.querySelector("#paymentQrImage");
 const paymentQrText = document.querySelector("#paymentQrText");
 const paymentScreenshot = document.querySelector("#paymentScreenshot");
 const downloadPaymentQr = document.querySelector("#downloadPaymentQr");
+const browserRegistrationsSection = document.querySelector("#browserRegistrationsSection");
+const browserRegistrationCount = document.querySelector("#browserRegistrationCount");
+const browserRegistrationsList = document.querySelector("#browserRegistrationsList");
 const maxScreenshotBytes = 5 * 1024 * 1024;
 const allowedScreenshotTypes = ["image/jpeg", "image/png"];
 const allowedScreenshotExtensions = [".jpg", ".jpeg", ".png"];
-let pollInterval = null;
+const browserStorageKey = "vaccinationDriveBrowserRegistrations";
+let activeStatusPoll = null;
+let browserListPoll = null;
 let vaccines = [];
 
 function escapeHtml(value) {
@@ -55,6 +60,50 @@ function validateScreenshot(file) {
   if (file.size > maxScreenshotBytes) {
     throw new Error("Payment screenshot must be 5 MB or smaller.");
   }
+}
+
+function formatDate(value) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+function statusClass(status) {
+  const normalized = String(status || "").toLowerCase();
+  if (normalized === "approved") return "approved";
+  if (normalized === "rejected") return "rejected";
+  return "pending";
+}
+
+function readStoredRegistrationIds() {
+  try {
+    const ids = JSON.parse(localStorage.getItem(browserStorageKey) || "[]");
+    return Array.isArray(ids) ? [...new Set(ids.filter((id) => typeof id === "string" && id.trim()))] : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function writeStoredRegistrationIds(ids) {
+  localStorage.setItem(browserStorageKey, JSON.stringify([...new Set(ids)].slice(0, 20)));
+}
+
+function rememberRegistrationId(id) {
+  const existingIds = readStoredRegistrationIds().filter((item) => item !== id);
+  writeStoredRegistrationIds([id, ...existingIds]);
+}
+
+async function fetchRegistration(id) {
+  const response = await fetch(`/api/registration/${encodeURIComponent(id)}`);
+  if (!response.ok) return null;
+  return response.json();
 }
 
 async function loadConfig() {
@@ -115,16 +164,95 @@ function updateRegistrationStatusUI(status, regId) {
   receiptLink.classList.add("hidden");
 }
 
-function startPolling(regId) {
-  if (pollInterval) clearInterval(pollInterval);
-  pollInterval = setInterval(async () => {
+function showCurrentRegistration(record) {
+  registrationId.textContent = record.registrationId;
+  resultName.textContent = record.fullName;
+  resultEmpty.classList.add("hidden");
+  resultCard.classList.remove("hidden");
+  updateRegistrationStatusUI(record.paymentStatus, record.registrationId);
+  if (record.paymentStatus === "Pending Verification") startStatusPolling(record.registrationId);
+}
+
+function renderBrowserRegistrations(records) {
+  if (!records.length) {
+    browserRegistrationsSection.classList.add("hidden");
+    browserRegistrationsList.innerHTML = "";
+    browserRegistrationCount.textContent = "0 records";
+    return;
+  }
+
+  browserRegistrationsSection.classList.remove("hidden");
+  browserRegistrationCount.textContent = `${records.length} record${records.length === 1 ? "" : "s"}`;
+  browserRegistrationsList.innerHTML = records
+    .map((record) => {
+      const receiptAction =
+        record.paymentStatus === "Approved"
+          ? `<a class="secondary" href="receipt.html?id=${encodeURIComponent(record.registrationId)}" target="_blank" rel="noopener">Download Receipt</a>`
+          : `<span class="muted mini-note">Receipt after approval</span>`;
+
+      return `
+        <article class="browser-registration-card">
+          <div>
+            <h4>${escapeHtml(record.fullName)}</h4>
+            <p>${escapeHtml(record.registrationId)}</p>
+            <p>${escapeHtml(record.vaccine)} · Rs ${escapeHtml(record.paymentAmount)}</p>
+            <p>Submitted: ${escapeHtml(formatDate(record.createdAt))}</p>
+          </div>
+          <div class="browser-registration-actions">
+            <span class="status ${statusClass(record.paymentStatus)}">${escapeHtml(record.paymentStatus)}</span>
+            <button class="secondary" type="button" data-registration-id="${escapeHtml(record.registrationId)}">View Status</button>
+            ${receiptAction}
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+async function loadBrowserRegistrations(options = {}) {
+  const ids = readStoredRegistrationIds();
+  if (!ids.length) {
+    renderBrowserRegistrations([]);
+    return [];
+  }
+
+  const records = (await Promise.all(ids.map(fetchRegistration))).filter(Boolean);
+  writeStoredRegistrationIds(records.map((record) => record.registrationId));
+  renderBrowserRegistrations(records);
+
+  const selectedRecord = options.selectId
+    ? records.find((record) => record.registrationId === options.selectId)
+    : options.showLatest
+      ? records[0]
+      : null;
+  if (selectedRecord) showCurrentRegistration(selectedRecord);
+
+  scheduleBrowserListPolling(records);
+  return records;
+}
+
+function scheduleBrowserListPolling(records) {
+  const hasPending = records.some((record) => record.paymentStatus === "Pending Verification");
+  if (hasPending && !browserListPoll) {
+    browserListPoll = setInterval(() => loadBrowserRegistrations(), 5000);
+  }
+  if (!hasPending && browserListPoll) {
+    clearInterval(browserListPoll);
+    browserListPoll = null;
+  }
+}
+
+function startStatusPolling(regId) {
+  if (activeStatusPoll) clearInterval(activeStatusPoll);
+  activeStatusPoll = setInterval(async () => {
     try {
-      const response = await fetch(`/api/registration/${encodeURIComponent(regId)}`);
-      const record = await response.json();
-      if (!response.ok) return;
-      updateRegistrationStatusUI(record.paymentStatus, regId);
+      const record = await fetchRegistration(regId);
+      if (!record) return;
+      if (registrationId.textContent === regId) updateRegistrationStatusUI(record.paymentStatus, regId);
+      await loadBrowserRegistrations();
       if (record.paymentStatus === "Approved" || record.paymentStatus === "Rejected") {
-        clearInterval(pollInterval);
+        clearInterval(activeStatusPoll);
+        activeStatusPoll = null;
       }
     } catch (error) {
       console.error("Polling error:", error);
@@ -142,6 +270,13 @@ downloadPaymentQr.addEventListener("click", () => {
   document.body.appendChild(link);
   link.click();
   link.remove();
+});
+
+browserRegistrationsList.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-registration-id]");
+  if (!button) return;
+  const record = await fetchRegistration(button.dataset.registrationId);
+  if (record) showCurrentRegistration(record);
 });
 
 form.addEventListener("submit", async (event) => {
@@ -163,15 +298,12 @@ form.addEventListener("submit", async (event) => {
     if (!response.ok) throw new Error(payload.error || "Could not save registration.");
 
     const record = payload.registration;
-    registrationId.textContent = record.registrationId;
-    resultName.textContent = record.fullName;
-    resultEmpty.classList.add("hidden");
-    resultCard.classList.remove("hidden");
-    updateRegistrationStatusUI(record.paymentStatus, record.registrationId);
+    rememberRegistrationId(record.registrationId);
+    showCurrentRegistration(record);
+    await loadBrowserRegistrations({ selectId: record.registrationId });
     formMessage.textContent =
       "Registration submitted successfully. Your payment is under verification. You will receive confirmation after admin approval.";
 
-    startPolling(record.registrationId);
     form.reset();
     updatePaymentForVaccine();
   } catch (error) {
@@ -181,3 +313,4 @@ form.addEventListener("submit", async (event) => {
 });
 
 loadConfig();
+loadBrowserRegistrations({ showLatest: true });

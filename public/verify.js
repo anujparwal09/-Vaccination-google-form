@@ -19,13 +19,6 @@ function renderRecord(record) {
   setText("#vPhone", record.phone);
   setText("#vAgeGender", `${record.age} / ${record.gender}`);
   setText("#vVaccine", record.vaccine);
-  const batchRow = document.querySelector("#vBatchNameRow");
-  if (record.batchName) {
-    batchRow.classList.remove("hidden");
-    setText("#vBatchName", record.batchName);
-  } else {
-    batchRow.classList.add("hidden");
-  }
   setText("#vDose", record.dose);
   setText("#vPayment", record.paymentStatus);
   setText("#vVerifiedAt", record.verifiedAt);
