@@ -39,7 +39,6 @@ function renderReceipt(record) {
   setText("#rVaccine", record.vaccine);
   setText("#rDose", record.dose);
   setText("#rAmount", `Rs ${record.paymentAmount}`);
-  setText("#rUtr", record.paymentReference || record.utrNumber);
   setText("#rApprovalDate", formatDate(record.approvalDate));
   setText("#rVerificationStatus", "APPROVED");
 }
@@ -69,7 +68,6 @@ function receiptHtml(record) {
           <div><dt>Vaccine</dt><dd>${escapeHtml(record.vaccine)}</dd></div>
           <div><dt>Dose</dt><dd>${escapeHtml(record.dose)}</dd></div>
           <div><dt>Amount</dt><dd>Rs ${escapeHtml(record.paymentAmount)}</dd></div>
-          <div><dt>UTR Number</dt><dd>${escapeHtml(record.paymentReference || record.utrNumber)}</dd></div>
           <div><dt>Approval Date</dt><dd>${escapeHtml(formatDate(record.approvalDate))}</dd></div>
           <div><dt>Verification Status</dt><dd>APPROVED</dd></div>
         </dl>

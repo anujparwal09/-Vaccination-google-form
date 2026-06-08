@@ -35,13 +35,11 @@ const HEADERS = [
   "Vaccine",
   "Dose",
   "Amount",
-  "UTR Number",
   "Payment Status",
   "Approval Date",
   "Registration Date",
   "Age",
   "Gender",
-  "Address",
   "Batch Name",
   "Payment Mode",
   "UPI ID",
@@ -71,12 +69,9 @@ function getApprovalDate(record) {
 
 function normalizeStoredRecord(record) {
   const paymentStatus = normalizePaymentStatus(record.paymentStatus);
-  const utrNumber = String(record.utrNumber || record.paymentReference || "").trim();
 
   return {
     ...record,
-    utrNumber,
-    paymentReference: utrNumber,
     paymentStatus,
     verificationStatus: record.verificationStatus || "Pending",
     verifiedAt: record.verifiedAt || "",
@@ -157,7 +152,6 @@ function readPaymentScreenshot(record) {
 
 function normalizeRegistration(body) {
   const vaccine = getVaccine(String(body.vaccineId || "").trim());
-  const utrNumber = String(body.utrNumber || body.paymentReference || "").trim();
 
   return {
     registrationId: createRegistrationId(),
@@ -175,8 +169,6 @@ function normalizeRegistration(body) {
     paymentAmount: vaccine ? vaccine.price : 0,
     paymentMode: "UPI",
     upiId: PAYMENT_UPI_ID,
-    utrNumber,
-    paymentReference: utrNumber,
     paymentStatus: PAYMENT_STATUS.PENDING,
     approvalDate: "",
     paymentConfirmedAt: "",
@@ -205,7 +197,6 @@ function validateRegistration(record, body) {
       return `${key} is required.`;
     }
   }
-  if (!record.paymentReference) return "UTR number is required.";
   if (!body.paymentScreenshot) return "Payment screenshot is required.";
   return null;
 }
@@ -219,13 +210,11 @@ function toExcelRow(record) {
     record.vaccine,
     record.dose,
     record.paymentAmount,
-    record.paymentReference,
     record.paymentStatus,
     getApprovalDate(record),
     record.createdAt,
     record.age,
     record.gender,
-    record.address,
     record.batchName || record.batchNumber || "",
     record.paymentMode,
     record.upiId || "",
@@ -261,13 +250,11 @@ async function saveExcel(records) {
     { width: 18 }, // Vaccine
     { width: 16 }, // Dose
     { width: 18 }, // Amount
-    { width: 24 }, // UTR Number
     { width: 22 }, // Payment Status
     { width: 24 }, // Approval Date
     { width: 24 }, // Registration Date
     { width: 8 },  // Age
     { width: 12 }, // Gender
-    { width: 36 }, // Address
     { width: 16 }, // Batch Name
     { width: 16 }, // Payment Mode
     { width: 16 }, // UPI ID
@@ -276,7 +263,7 @@ async function saveExcel(records) {
     { width: 18 }, // Verification Status
     { width: 18 }  // Verified At
   ];
-  sheet.autoFilter = { from: "A1", to: "U1" };
+  sheet.autoFilter = { from: "A1", to: "S1" };
   sheet.eachRow((row) => {
     row.eachCell((cell) => {
       cell.border = {
@@ -308,8 +295,6 @@ function publicRecord(record) {
     paymentAmount: record.paymentAmount,
     paymentMode: record.paymentMode,
     upiId: record.upiId || PAYMENT_UPI_ID,
-    paymentReference: record.paymentReference || record.utrNumber || "",
-    utrNumber: record.paymentReference || record.utrNumber || "",
     paymentStatus,
     approvalDate: paymentStatus === PAYMENT_STATUS.APPROVED ? getApprovalDate(record) : "",
     paymentConfirmedAt: paymentStatus === PAYMENT_STATUS.APPROVED ? getApprovalDate(record) : "",
@@ -326,8 +311,6 @@ function adminRecord(record) {
     email: record.email,
     address: record.address,
     upiId: record.upiId,
-    paymentReference: record.paymentReference,
-    utrNumber: record.paymentReference || record.utrNumber || "",
     paymentScreenshotName: record.paymentScreenshot || "",
     paymentScreenshotDataUrl: readPaymentScreenshot(record),
     rejectedAt: record.rejectedAt || ""

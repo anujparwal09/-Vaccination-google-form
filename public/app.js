@@ -152,7 +152,6 @@ form.addEventListener("submit", async (event) => {
   try {
     validateScreenshot(paymentScreenshot.files[0]);
     const body = formToJson(form);
-    body.utrNumber = body.paymentReference;
     body.paymentScreenshot = await fileToDataUrl(paymentScreenshot.files[0]);
 
     const response = await fetch("/api/register", {

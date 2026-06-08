@@ -125,7 +125,6 @@ function renderRecords(records) {
               <p><span>Email</span>${escapeHtml(record.email || "-")}</p>
               <p><span>Vaccine</span>${escapeHtml(record.vaccine)}</p>
               <p><span>Amount</span>Rs ${escapeHtml(record.paymentAmount)}</p>
-              <p><span>UTR Number</span>${escapeHtml(record.paymentReference || "-")}</p>
               <p><span>Registration Date</span>${escapeHtml(formatDate(record.createdAt))}</p>
               <p><span>Approval Date</span>${escapeHtml(formatDate(record.approvalDate))}</p>
             </div>
