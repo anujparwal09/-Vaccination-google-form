@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vaccination Verification</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-block">
+        <img class="club-icon" src="assets/rotaract-omc-logo.png" alt="Rotaract Club OMC logo">
+        <div>
+          <h1>Vaccination drive by Rotaract club of OMC</h1>
+          <p>Look up an approved registration, download the receipt, or mark attendance verified.</p>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Registration</a>
+        <a href="admin.html">Admin Panel</a>
+      </nav>
+    </header>
+    <main class="verify-shell">
+      <section class="panel lookup-panel">
+        <form id="lookupForm" class="lookup-form">
+          <label>
+            Registration ID
+            <input id="lookupId" name="registrationId" required placeholder="VAC-YYYYMMDD-XXXXXX">
+          </label>
+          <button class="primary" type="submit">Find Registration</button>
+        </form>
+        <p class="message" id="lookupMessage"></p>
+      </section>
+      <section id="verificationCard" class="panel verification-card hidden">
+        <div class="section-title">
+          <h2 id="personName">Participant</h2>
+          <span id="verificationStatus"></span>
+        </div>
+        <dl class="verification-details">
+          <div><dt>Registration ID</dt><dd id="vRegistrationId"></dd></div>
+          <div><dt>Phone</dt><dd id="vPhone"></dd></div>
+          <div><dt>Age / Gender</dt><dd id="vAgeGender"></dd></div>
+          <div><dt>Vaccine</dt><dd id="vVaccine"></dd></div>
+          <div id="vBatchNameRow"><dt>Batch Name</dt><dd id="vBatchName"></dd></div>
+          <div><dt>Dose</dt><dd id="vDose"></dd></div>
+          <div><dt>Payment</dt><dd id="vPayment"></dd></div>
+          <div><dt>Verified At</dt><dd id="vVerifiedAt"></dd></div>
+        </dl>
+        <div class="form-actions">
+          <button id="verifyButton" class="primary" type="button">Mark as Verified</button>
+          <a id="receiptButton" class="secondary hidden" href="#" target="_blank" rel="noopener">Download Receipt</a>
+        </div>
+      </section>
+    </main>
+    <script src="verify.js"></script>
+  </body>
+</html>

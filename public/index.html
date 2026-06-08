@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vaccination Drive Registration</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-block">
+        <img class="club-icon" src="assets/rotaract-omc-logo.png" alt="Rotaract Club OMC logo">
+        <div>
+          <h1>Vaccination drive by Rotaract club of OMC</h1>
+          <p>Register participants, collect manual UPI payment proof, and track admin verification.</p>
+        </div>
+      </div>
+      <nav>
+        <a href="verify.html">Verification</a>
+        <a href="admin.html">Admin Panel</a>
+      </nav>
+    </header>
+    <section class="panel progress-panel" aria-label="Registration progress">
+      <div class="progress-step active">
+        <span>1</span>
+        <strong>Registration Form</strong>
+      </div>
+      <div class="progress-step">
+        <span>2</span>
+        <strong>Payment</strong>
+      </div>
+      <div class="progress-step">
+        <span>3</span>
+        <strong>Admin Verification</strong>
+      </div>
+      <div class="progress-step">
+        <span>4</span>
+        <strong>Confirmation</strong>
+      </div>
+    </section>
+    <main class="layout">
+      <section class="panel form-panel">
+        <div class="section-title">
+          <div>
+            <span class="section-kicker">Registration Form</span>
+            <h2>New Participant Registration</h2>
+          </div>
+          <span>Manual UPI payment</span>
+        </div>
+        <form id="registrationForm">
+          <fieldset class="step-card">
+            <legend><span>Step 1</span> Participant Details</legend>
+            <label class="double">Full name <input name="fullName" required autocomplete="name"></label>
+            <label>Age <input name="age" type="number" min="1" max="120" required></label>
+            <label>Gender
+              <select name="gender" required>
+                <option value="">Select</option>
+                <option>Female</option>
+                <option>Male</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>Phone <input name="phone" required autocomplete="tel"></label>
+            <label>Email <input name="email" type="email" autocomplete="email"></label>
+            <label class="wide">Address <textarea name="address" rows="3"></textarea></label>
+            <label>Batch name <input name="batchName" placeholder="Batch name"></label>
+          </fieldset>
+          <fieldset class="step-card">
+            <legend><span>Step 2</span> Vaccination Details</legend>
+            <label>Vaccine
+              <select id="vaccineSelect" name="vaccineId" required>
+                <option value="">Select vaccine</option>
+              </select>
+            </label>
+            <label>Dose
+              <select name="dose" required>
+                <option value="">Select</option>
+                <option>First dose</option>
+                <option>Second dose</option>
+                <option>Booster</option>
+              </select>
+            </label>
+          </fieldset>
+          <fieldset class="step-card payment-section">
+            <legend><span>Step 3</span> Payment Details</legend>
+            <label>Amount <input id="paymentAmount" name="paymentAmount" type="number" min="1" step="0.01" readonly required></label>
+            <label>Payment mode <input name="paymentMode" value="UPI" readonly></label>
+            <label>UPI ID <input id="upiId" name="upiId" readonly></label>
+            <label>UTR Number <input id="utrNumber" name="paymentReference" required placeholder="Enter UTR / transaction ID"></label>
+            <label>
+              Payment Screenshot
+              <input id="paymentScreenshot" name="paymentScreenshotFile" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required>
+              <small>JPG, JPEG, or PNG. Maximum size 5 MB.</small>
+            </label>
+            <div id="paymentQrBlock" class="payment-qr wide">
+              <div>
+                <h3>Static UPI Payment QR</h3>
+                <p id="paymentQrText">Select a vaccine to view the fee. Pay using any UPI app and upload payment proof below.</p>
+              </div>
+              <img id="paymentQrImage" class="single-payment-qr" src="assets/upi-payment-qr.jpeg" alt="UPI payment QR code">
+            </div>
+          </fieldset>
+          <div class="form-actions">
+            <button class="primary" type="submit">Submit Registration</button>
+            <button id="downloadPaymentQr" class="secondary" type="button">Download Payment QR</button>
+          </div>
+          <p class="message" id="formMessage"></p>
+        </form>
+      </section>
+      <aside class="panel result-panel">
+        <div class="section-title">
+          <div>
+            <span class="section-kicker">Step 4</span>
+            <h2>Registration Status</h2>
+          </div>
+          <span id="resultStatus">Waiting</span>
+        </div>
+        <div id="resultEmpty" class="empty-state">Complete participant details, pay with the UPI QR, and upload the payment screenshot.</div>
+        <div id="resultCard" class="result-card hidden">
+          <div id="resultBanner" class="success-banner">
+            <h3 id="resultBannerTitle">Registration submitted successfully.</h3>
+            <p id="resultBannerText">Your payment is under verification. You will receive confirmation after admin approval.</p>
+          </div>
+          <dl>
+            <div><dt>Registration ID</dt><dd id="registrationId"></dd></div>
+            <div><dt>Name</dt><dd id="resultName"></dd></div>
+            <div><dt>Payment</dt><dd id="resultPayment"></dd></div>
+          </dl>
+          <a id="receiptLink" class="secondary hidden" href="#" target="_blank" rel="noopener">Download Receipt</a>
+        </div>
+      </aside>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

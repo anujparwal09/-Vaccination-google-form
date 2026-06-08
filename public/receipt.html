@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vaccination Registration Receipt</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar no-print">
+      <div class="brand-block">
+        <img class="club-icon" src="assets/rotaract-omc-logo.png" alt="Rotaract Club OMC logo">
+        <div>
+          <h1>Vaccination drive by Rotaract club of OMC</h1>
+          <p>Approved registration receipt for manual UPI payment verification.</p>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Registration</a>
+        <a href="verify.html">Verification</a>
+        <a href="admin.html">Admin Panel</a>
+      </nav>
+    </header>
+    <main class="receipt-shell">
+      <section id="receiptCard" class="panel receipt-card hidden">
+        <div class="receipt-header">
+          <img class="receipt-logo" src="assets/rotaract-omc-logo.png" alt="Rotaract Club OMC logo">
+          <div>
+            <span class="section-kicker">Payment Receipt</span>
+            <h2>Vaccination Registration Receipt</h2>
+            <p>Verification Status: <strong id="receiptStatus">APPROVED</strong></p>
+          </div>
+        </div>
+        <dl class="receipt-details">
+          <div><dt>Registration ID</dt><dd id="rRegistrationId"></dd></div>
+          <div><dt>Name</dt><dd id="rName"></dd></div>
+          <div><dt>Vaccine</dt><dd id="rVaccine"></dd></div>
+          <div><dt>Dose</dt><dd id="rDose"></dd></div>
+          <div><dt>Amount</dt><dd id="rAmount"></dd></div>
+          <div><dt>UTR Number</dt><dd id="rUtr"></dd></div>
+          <div><dt>Approval Date</dt><dd id="rApprovalDate"></dd></div>
+          <div><dt>Verification Status</dt><dd id="rVerificationStatus"></dd></div>
+        </dl>
+        <div class="receipt-actions no-print">
+          <button id="downloadReceiptButton" class="primary" type="button">Download Receipt</button>
+          <button id="printReceiptButton" class="secondary" type="button">Print</button>
+        </div>
+      </section>
+      <section id="receiptMessage" class="panel receipt-card">
+        <div class="empty-state">Loading receipt...</div>
+      </section>
+    </main>
+    <script src="receipt.js"></script>
+  </body>
+</html>

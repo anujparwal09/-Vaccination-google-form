@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Payment Verification</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-block">
+        <img class="club-icon" src="assets/rotaract-omc-logo.png" alt="Rotaract Club OMC logo">
+        <div>
+          <h1>Vaccination drive by Rotaract club of OMC</h1>
+          <p>Review manual UPI payments, approve or reject proof, and export verified records.</p>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">Registration</a>
+        <a href="verify.html">Verification</a>
+      </nav>
+    </header>
+    <div id="adminLoginWrapper" class="admin-login-container">
+      <section class="panel login-panel">
+        <div class="section-title stacked">
+          <div>
+            <span class="section-kicker">Admin Login</span>
+            <h2>Payment Verification</h2>
+          </div>
+        </div>
+        <form id="adminForm" class="lookup-form">
+          <label>
+            Admin password
+            <div class="password-wrapper">
+              <input id="adminPassword" type="password" required autocomplete="current-password">
+              <button type="button" id="togglePasswordBtn" class="toggle-password-btn" aria-label="Toggle password visibility">Show</button>
+            </div>
+          </label>
+          <button class="primary" type="submit">Unlock Admin Panel</button>
+        </form>
+        <p class="message" id="adminMessage"></p>
+      </section>
+    </div>
+
+    <main id="adminDashboardShell" class="admin-shell hidden">
+      <section id="adminDashboard" class="panel admin-dashboard">
+        <div class="section-title">
+          <div>
+            <span class="section-kicker">Dashboard</span>
+            <h2>Manual Payment Verification</h2>
+          </div>
+          <button id="downloadExcelButton" class="secondary" type="button">Download Excel</button>
+        </div>
+        <div class="dashboard-cards">
+          <article class="dashboard-card">
+            <span>Total Registrations</span>
+            <strong id="totalRegistrations">0</strong>
+          </article>
+          <article class="dashboard-card">
+            <span>Pending Payments</span>
+            <strong id="pendingPayments">0</strong>
+          </article>
+          <article class="dashboard-card">
+            <span>Approved Payments</span>
+            <strong id="approvedPayments">0</strong>
+          </article>
+          <article class="dashboard-card">
+            <span>Rejected Payments</span>
+            <strong id="rejectedPayments">0</strong>
+          </article>
+        </div>
+        <div class="section-title records-heading">
+          <h2>Registrations</h2>
+          <span id="adminRecordCount">0 records</span>
+        </div>
+        
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-status="all">All <span id="countAll" class="filter-badge">0</span></button>
+          <button class="filter-tab" data-status="Pending Verification">Under Approval <span id="countPending" class="filter-badge">0</span></button>
+          <button class="filter-tab" data-status="Approved">Approved <span id="countApproved" class="filter-badge">0</span></button>
+          <button class="filter-tab" data-status="Rejected">Not Approved <span id="countRejected" class="filter-badge">0</span></button>
+        </div>
+        
+        <div id="adminRecords" class="admin-records"></div>
+      </section>
+    </main>
+    <dialog id="screenshotDialog" class="screenshot-dialog">
+      <div class="dialog-header">
+        <div>
+          <span class="section-kicker">Payment Proof</span>
+          <h2 id="screenshotTitle">Screenshot</h2>
+        </div>
+        <button id="closeScreenshotDialog" class="icon-button" type="button" aria-label="Close screenshot preview">x</button>
+      </div>
+      <img id="screenshotPreview" alt="Payment screenshot preview">
+      <div class="form-actions">
+        <button id="openScreenshotButton" class="secondary" type="button">Open Image</button>
+        <button id="downloadScreenshotButton" class="secondary" type="button">Download Image</button>
+      </div>
+    </dialog>
+    <script src="admin.js"></script>
+  </body>
+</html>

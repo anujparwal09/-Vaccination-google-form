@@ -1,0 +1,20 @@
+{
+  "name": "vaccination-drive-payment",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local vaccination drive registration, manual UPI payment verification, receipt generation, and Excel export software.",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check public/app.js && node --check public/admin.js && node --check public/verify.js && node --check public/receipt.js",
+    "test": "npm run check"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "qrcode": "^1.5.4"
+  }
+}
