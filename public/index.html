@@ -60,8 +60,8 @@
                 <option>Other</option>
               </select>
             </label>
-            <label>Phone <input name="phone" required autocomplete="tel"></label>
-            <label>Email <input name="email" type="email" autocomplete="email"></label>
+            <label>Phone <input name="phone" type="tel" pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number" required autocomplete="tel"></label>
+            <label>Email <input name="email" type="email" required pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" title="Please enter a valid email address" autocomplete="email"></label>
           </fieldset>
           <fieldset class="step-card">
             <legend><span>Step 2</span> Vaccination Details</legend>
@@ -97,6 +97,9 @@
               <img id="paymentQrImage" class="single-payment-qr" src="assets/upi-payment-qr.jpeg" alt="UPI payment QR code">
             </div>
           </fieldset>
+          <div class="terms-block wide" style="margin: 1rem 0;">
+            <label><input type="checkbox" required> I agree to the <a href="#">Terms and Conditions</a></label>
+          </div>
           <div class="form-actions">
             <button class="primary" type="submit">Submit Registration</button>
             <button id="downloadPaymentQr" class="secondary" type="button">Download Payment QR</button>

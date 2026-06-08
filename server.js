@@ -184,6 +184,7 @@ function validateRegistration(record, body) {
     "age",
     "gender",
     "phone",
+    "email",
     "vaccine",
     "dose",
     "paymentStatus"
@@ -194,6 +195,8 @@ function validateRegistration(record, body) {
       return `${key} is required.`;
     }
   }
+  if (!/^\d{10}$/.test(record.phone)) return "Phone number must be exactly 10 digits.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(record.email)) return "Please enter a valid email address.";
   if (!body.paymentScreenshot) return "Payment screenshot is required.";
   return null;
 }
