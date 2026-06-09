@@ -281,6 +281,14 @@ paymentModeSelect.addEventListener("change", () => {
   }
 });
 
+const termsLink = document.querySelector("#termsLink");
+if (termsLink) {
+  termsLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    alert("Terms and Conditions:\n\nI understand that once paid, the money is non-refundable.");
+  });
+}
+
 downloadPaymentQr.addEventListener("click", () => {
   if (!paymentQrImage.src) return;
   const link = document.createElement("a");
