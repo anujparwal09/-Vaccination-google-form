@@ -332,10 +332,30 @@ form.addEventListener("submit", async (event) => {
       "Registration submitted successfully. Your payment is under verification. You will receive confirmation after admin approval.";
 
     form.reset();
+    draftFields.forEach(field => sessionStorage.removeItem(`draft_${field}`));
     updatePaymentForVaccine();
   } catch (error) {
     formMessage.textContent = error.message;
     formMessage.classList.add("error");
+  }
+});
+
+const draftFields = ["fullName", "age", "gender", "phone", "email", "vaccineId", "dose"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  draftFields.forEach(field => {
+    const input = form.elements[field];
+    const saved = sessionStorage.getItem(`draft_${field}`);
+    if (input && saved) {
+      input.value = saved;
+    }
+  });
+  updatePaymentForVaccine();
+});
+
+form.addEventListener("input", (e) => {
+  if (draftFields.includes(e.target.name)) {
+    sessionStorage.setItem(`draft_${e.target.name}`, e.target.value);
   }
 });
 

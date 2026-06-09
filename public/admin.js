@@ -10,6 +10,7 @@ const countApproved = document.querySelector("#countApproved");
 const countRejected = document.querySelector("#countRejected");
 const togglePasswordBtn = document.querySelector("#togglePasswordBtn");
 const downloadExcelButton = document.querySelector("#downloadExcelButton");
+const adminLogoutButton = document.querySelector("#adminLogoutButton");
 const totalRegistrations = document.querySelector("#totalRegistrations");
 const pendingPayments = document.querySelector("#pendingPayments");
 const approvedPayments = document.querySelector("#approvedPayments");
@@ -268,6 +269,7 @@ adminForm.addEventListener("submit", async (event) => {
 
   try {
     await loadAdminRecords();
+    sessionStorage.setItem("adminPassword", activePassword);
     adminDashboardShell.classList.remove("hidden");
     adminLoginWrapper.classList.add("hidden");
     adminMessage.textContent = "Admin panel unlocked.";
@@ -328,4 +330,31 @@ document.querySelector(".filter-tabs").addEventListener("click", (event) => {
   tab.classList.add("active");
   activeFilter = tab.dataset.status;
   renderRecords(currentRecords);
+});
+
+adminLogoutButton.addEventListener("click", () => {
+  sessionStorage.removeItem("adminPassword");
+  activePassword = "";
+  adminPassword.value = "";
+  adminDashboardShell.classList.add("hidden");
+  adminLoginWrapper.classList.remove("hidden");
+  adminMessage.textContent = "Logged out successfully.";
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const savedPassword = sessionStorage.getItem("adminPassword");
+  if (savedPassword) {
+    adminPassword.value = savedPassword;
+    activePassword = savedPassword;
+    adminMessage.textContent = "Loading admin panel...";
+    try {
+      await loadAdminRecords();
+      adminDashboardShell.classList.remove("hidden");
+      adminLoginWrapper.classList.add("hidden");
+      adminMessage.textContent = "Admin panel unlocked.";
+    } catch (error) {
+      sessionStorage.removeItem("adminPassword");
+      adminMessage.textContent = "Session expired. Please log in again.";
+    }
+  }
 });
