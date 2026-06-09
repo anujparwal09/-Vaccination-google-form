@@ -7,15 +7,38 @@ const QRCode = require("qrcode");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(__dirname, "data");
-const PUBLIC_DIR = path.join(__dirname, "public");
+let resolvedDataDir = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(__dirname, "data");
+
+try {
+  if (!fs.existsSync(resolvedDataDir)) {
+    fs.mkdirSync(resolvedDataDir, { recursive: true });
+  }
+} catch (err) {
+  console.warn(`[WARNING] Cannot create ${resolvedDataDir}: ${err.message}. Falling back to local ./data folder.`);
+  resolvedDataDir = path.join(__dirname, "data");
+  if (!fs.existsSync(resolvedDataDir)) {
+    fs.mkdirSync(resolvedDataDir, { recursive: true });
+  }
+}
+
+const DATA_DIR = resolvedDataDir;
 const DB_FILE = path.join(DATA_DIR, "registrations.json");
 const EXCEL_FILE = path.join(DATA_DIR, "vaccination_registrations.xlsx");
 const SCREENSHOT_DIR = path.join(DATA_DIR, "payment-screenshots");
+
+try {
+  if (!fs.existsSync(SCREENSHOT_DIR)) {
+    fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
+  }
+} catch (err) {
+  console.error(`[ERROR] Cannot create screenshot directory: ${err.message}`);
+}
+
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Vac@7890";
 const PAYMENT_UPI_ID = process.env.PAYMENT_UPI_ID || "9325339930-2@ybl";
 const PAYMENT_PAYEE_NAME = process.env.PAYMENT_PAYEE_NAME || "";
 const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
+const PUBLIC_DIR = path.join(__dirname, "public");
 const PAYMENT_STATUS = {
   PENDING: "Pending Verification",
   APPROVED: "Approved",
@@ -47,9 +70,6 @@ const HEADERS = [
   "Verification Status",
   "Verified At"
 ];
-
-fs.mkdirSync(DATA_DIR, { recursive: true });
-fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
 
 app.set("trust proxy", 1);
 app.use(express.json({ limit: "10mb" }));
