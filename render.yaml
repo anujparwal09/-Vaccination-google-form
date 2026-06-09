@@ -10,10 +10,12 @@ services:
         value: production
       - key: DATA_DIR
         value: /var/data
+      - key: ADMIN_PASSWORD
+        sync: false
       - key: PAYMENT_UPI_ID
-        value: 9325339930@sbi
+        sync: false
       - key: PAYMENT_PAYEE_NAME
-        value: Yash Biyani
+        sync: false
     disk:
       name: vaccination-drive-data
       mountPath: /var/data

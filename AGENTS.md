@@ -34,4 +34,4 @@ The project uses plain CommonJS JavaScript, HTML, and CSS with no build step. Ke
 
 ## Deployment Notes
 
-Render deployment is configured through `render.yaml`. Keep `DATA_DIR=/var/data` and the persistent disk enabled so registrations, uploaded screenshots, and Excel exports survive redeploys. Do not commit `.env`, `data/`, uploaded screenshots, generated Excel files, logs, or `node_modules/`.
+Render deployment is configured through `render.yaml`. Keep `DATA_DIR=/var/data` and the persistent disk enabled so registrations, uploaded screenshots, and Excel exports survive redeploys. Set `ADMIN_PASSWORD`, `PAYMENT_UPI_ID`, and `PAYMENT_PAYEE_NAME` in the hosting environment, not in committed files. Do not commit `.env`, `data/`, uploaded screenshots, generated Excel files, logs, or `node_modules/`.

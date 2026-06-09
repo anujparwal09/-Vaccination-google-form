@@ -20,6 +20,7 @@ Optional payment settings:
 ```powershell
 $env:PORT="3000"
 $env:DATA_DIR="./data"
+$env:ADMIN_PASSWORD="your-admin-password"
 $env:PAYMENT_UPI_ID="your-upi-id"
 $env:PAYMENT_PAYEE_NAME="Payee Name"
 npm.cmd start
@@ -46,7 +47,7 @@ For public deployment, set `DATA_DIR` to a persistent disk or volume path.
 - Admin payment verification: `http://localhost:3000/admin.html`
 - Receipt download: `http://localhost:3000/receipt.html?id=<registration-id>`
 
-Admin password is `Vac@7890`.
+Set the admin password through the `ADMIN_PASSWORD` environment variable. Do not commit admin passwords, payment account values, runtime data, screenshots, or Excel exports.
 
 ## Permanent Public URL With Render
 
@@ -59,8 +60,12 @@ Use this if you want a permanent public link such as `https://your-app.onrender.
 5. In Render, choose **New +** then **Blueprint**.
 6. Connect the GitHub repository.
 7. Render will read `render.yaml` and create a web service with a persistent disk.
-8. Deploy the service.
-9. After deploy finishes, Render gives you a permanent public URL.
+8. Add these private environment values when Render asks for them:
+   - `ADMIN_PASSWORD`: the password you want for `admin.html`
+   - `PAYMENT_UPI_ID`: the UPI ID users should pay
+   - `PAYMENT_PAYEE_NAME`: the payment receiver name
+9. Deploy the service.
+10. After deploy finishes, Render gives you a permanent public URL.
 
 Important: keep the persistent disk enabled. Without it, registrations, payment screenshots, and Excel data can be lost after redeploys.
 
@@ -77,6 +82,7 @@ If you do not use Blueprint, create a Web Service with:
 - Build command: `npm install`
 - Start command: `npm start`
 - Environment variable: `DATA_DIR=/var/data`
-- Environment variable: `PAYMENT_UPI_ID=9325339930@sbi`
-- Environment variable: `PAYMENT_PAYEE_NAME=Yash Biyani`
+- Environment variable: `ADMIN_PASSWORD=<your-admin-password>`
+- Environment variable: `PAYMENT_UPI_ID=<your-upi-id>`
+- Environment variable: `PAYMENT_PAYEE_NAME=<payment-receiver-name>`
 - Persistent disk mount path: `/var/data`

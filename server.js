@@ -12,9 +12,9 @@ const PUBLIC_DIR = path.join(__dirname, "public");
 const DB_FILE = path.join(DATA_DIR, "registrations.json");
 const EXCEL_FILE = path.join(DATA_DIR, "vaccination_registrations.xlsx");
 const SCREENSHOT_DIR = path.join(DATA_DIR, "payment-screenshots");
-const ADMIN_PASSWORD = "Vac@7890";
-const PAYMENT_UPI_ID = process.env.PAYMENT_UPI_ID || "9325339930@sbi";
-const PAYMENT_PAYEE_NAME = process.env.PAYMENT_PAYEE_NAME || "Yash Biyani";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
+const PAYMENT_UPI_ID = process.env.PAYMENT_UPI_ID || "";
+const PAYMENT_PAYEE_NAME = process.env.PAYMENT_PAYEE_NAME || "";
 const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
 const PAYMENT_STATUS = {
   PENDING: "Pending Verification",
@@ -110,6 +110,10 @@ function receiptUrl(req, registrationId) {
 }
 
 function hasAdminAccess(req, res) {
+  if (!ADMIN_PASSWORD) {
+    res.status(500).json({ error: "Admin password is not configured." });
+    return false;
+  }
   if (req.body.password !== ADMIN_PASSWORD) {
     res.status(403).json({ error: "Invalid admin password." });
     return false;
