@@ -79,15 +79,25 @@ function receiptHtml(record) {
 
 function downloadReceipt() {
   if (!currentRecord) return;
-  const blob = new Blob([receiptHtml(currentRecord)], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${currentRecord.registrationId}-receipt.html`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
+  
+  const element = document.querySelector("#receiptCard");
+  const actions = document.querySelector(".receipt-actions");
+  
+  // Hide buttons during PDF generation
+  actions.style.display = "none";
+  
+  const opt = {
+    margin:       [0.5, 0.5, 0.5, 0.5],
+    filename:     `${currentRecord.registrationId}-receipt.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+  
+  html2pdf().set(opt).from(element).save().then(() => {
+    // Restore buttons after generation
+    actions.style.display = "flex";
+  });
 }
 
 async function loadReceipt() {
