@@ -13,7 +13,7 @@ const DB_FILE = path.join(DATA_DIR, "registrations.json");
 const EXCEL_FILE = path.join(DATA_DIR, "vaccination_registrations.xlsx");
 const SCREENSHOT_DIR = path.join(DATA_DIR, "payment-screenshots");
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
-const PAYMENT_UPI_ID = process.env.PAYMENT_UPI_ID || "";
+const PAYMENT_UPI_ID = process.env.PAYMENT_UPI_ID || "9325339930-2@ybl";
 const PAYMENT_PAYEE_NAME = process.env.PAYMENT_PAYEE_NAME || "";
 const MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024;
 const PAYMENT_STATUS = {
@@ -168,7 +168,7 @@ function normalizeRegistration(body) {
     vaccine: vaccine ? vaccine.name : "",
     dose: String(body.dose || "").trim(),
     paymentAmount: vaccine ? vaccine.price : 0,
-    paymentMode: "UPI",
+    paymentMode: String(body.paymentMode || "UPI").trim(),
     upiId: PAYMENT_UPI_ID,
     paymentStatus: PAYMENT_STATUS.PENDING,
     approvalDate: "",

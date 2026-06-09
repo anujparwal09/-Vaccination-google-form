@@ -9,8 +9,11 @@ const resultPayment = document.querySelector("#resultPayment");
 const receiptLink = document.querySelector("#receiptLink");
 const vaccineSelect = document.querySelector("#vaccineSelect");
 const paymentAmount = document.querySelector("#paymentAmount");
+const paymentModeSelect = document.querySelector("#paymentModeSelect");
+const upiIdContainer = document.querySelector("#upiIdContainer");
 const upiId = document.querySelector("#upiId");
 const paymentQrImage = document.querySelector("#paymentQrImage");
+const paymentQrBlock = document.querySelector("#paymentQrBlock");
 const paymentQrText = document.querySelector("#paymentQrText");
 const paymentScreenshot = document.querySelector("#paymentScreenshot");
 const downloadPaymentQr = document.querySelector("#downloadPaymentQr");
@@ -261,6 +264,19 @@ function startStatusPolling(regId) {
 }
 
 vaccineSelect.addEventListener("change", updatePaymentForVaccine);
+
+paymentModeSelect.addEventListener("change", () => {
+  if (paymentModeSelect.value === "UPI ID") {
+    upiIdContainer.classList.remove("hidden");
+    paymentQrBlock.classList.add("hidden");
+  } else if (paymentModeSelect.value === "QR Code") {
+    upiIdContainer.classList.add("hidden");
+    paymentQrBlock.classList.remove("hidden");
+  } else {
+    upiIdContainer.classList.add("hidden");
+    paymentQrBlock.classList.add("hidden");
+  }
+});
 
 downloadPaymentQr.addEventListener("click", () => {
   if (!paymentQrImage.src) return;

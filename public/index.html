@@ -82,14 +82,20 @@
           <fieldset class="step-card payment-section">
             <legend><span>Step 3</span> Payment Details</legend>
             <label>Amount <input id="paymentAmount" name="paymentAmount" type="number" min="1" step="0.01" readonly required></label>
-            <label>Payment mode <input name="paymentMode" value="UPI" readonly></label>
-            <label>UPI ID <input id="upiId" name="upiId" readonly></label>
-            <label>
+            <label>Payment mode 
+              <select id="paymentModeSelect" name="paymentMode" required>
+                <option value="">Select mode</option>
+                <option value="UPI ID">UPI ID</option>
+                <option value="QR Code">QR Code</option>
+              </select>
+            </label>
+            <label id="upiIdContainer" class="hidden">UPI ID <input id="upiId" name="upiId" readonly></label>
+            <label class="wide">
               Payment Screenshot
               <input id="paymentScreenshot" name="paymentScreenshotFile" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required>
               <small>JPG, JPEG, or PNG. Maximum size 5 MB.</small>
             </label>
-            <div id="paymentQrBlock" class="payment-qr wide">
+            <div id="paymentQrBlock" class="payment-qr wide hidden">
               <div>
                 <h3>Static UPI Payment QR</h3>
                 <p id="paymentQrText">Select a vaccine to view the fee. Pay using any UPI app and upload payment proof below.</p>
