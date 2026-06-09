@@ -126,10 +126,12 @@ function updatePaymentForVaccine() {
 
   if (!vaccine) {
     paymentQrText.textContent = "Select a vaccine to view the fee. Pay using any UPI app and upload payment proof below.";
+    paymentQrImage.src = "assets/upi-payment-qr.jpeg";
     return;
   }
 
   paymentQrText.textContent = `${vaccine.name}: Rs ${vaccine.price}. Pay using any UPI app and upload payment proof below.`;
+  paymentQrImage.src = `/api/qr?amount=${vaccine.price}`;
 }
 
 function updateRegistrationStatusUI(status, regId) {

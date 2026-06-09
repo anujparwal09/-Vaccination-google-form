@@ -411,6 +411,27 @@ app.post("/api/admin/excel", async (req, res) => {
   res.download(EXCEL_FILE, "vaccination_registrations.xlsx");
 });
 
+app.get("/api/qr", async (req, res) => {
+  try {
+    const amount = req.query.amount;
+    if (!amount) return res.status(400).json({ error: "Amount is required" });
+    
+    const upiUri = `upi://pay?pa=${encodeURIComponent(PAYMENT_UPI_ID)}&pn=${encodeURIComponent(PAYMENT_PAYEE_NAME)}&am=${encodeURIComponent(amount)}&cu=INR`;
+    
+    const qrDataUrl = await QRCode.toDataURL(upiUri, { width: 300, margin: 2 });
+    const base64Data = qrDataUrl.replace(/^data:image\/png;base64,/, "");
+    const img = Buffer.from(base64Data, "base64");
+    
+    res.writeHead(200, {
+      "Content-Type": "image/png",
+      "Content-Length": img.length
+    });
+    res.end(img);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to generate QR code" });
+  }
+});
+
 app.post("/api/admin/registrations", (req, res) => {
   if (!hasAdminAccess(req, res)) return;
 
