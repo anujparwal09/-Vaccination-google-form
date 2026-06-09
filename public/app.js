@@ -220,7 +220,7 @@ async function loadBrowserRegistrations(options = {}) {
   }
 
   const records = (await Promise.all(ids.map(fetchRegistration))).filter(Boolean);
-  writeStoredRegistrationIds(records.map((record) => record.registrationId));
+  // Do not rewrite localStorage here to prevent wiping IDs on network errors
   renderBrowserRegistrations(records);
 
   const selectedRecord = options.selectId
@@ -237,7 +237,7 @@ async function loadBrowserRegistrations(options = {}) {
 function scheduleBrowserListPolling(records) {
   const hasPending = records.some((record) => record.paymentStatus === "Pending Verification");
   if (hasPending && !browserListPoll) {
-    browserListPoll = setInterval(() => loadBrowserRegistrations(), 5000);
+    browserListPoll = setInterval(() => loadBrowserRegistrations(), 300000); // 5 minutes
   }
   if (!hasPending && browserListPoll) {
     clearInterval(browserListPoll);
@@ -260,7 +260,7 @@ function startStatusPolling(regId) {
     } catch (error) {
       console.error("Polling error:", error);
     }
-  }, 5000);
+  }, 300000); // 5 minutes
 }
 
 vaccineSelect.addEventListener("change", updatePaymentForVaccine);
