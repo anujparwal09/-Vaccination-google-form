@@ -113,7 +113,7 @@ async function loadConfig() {
   const response = await fetch("/api/config");
   const config = await response.json();
   vaccines = config.vaccines || [];
-  upiId.value = config.payment.upiId;
+  upiId.value = config.payment.upiId || "9325339930-2@ybl";
   paymentQrImage.src = config.payment.referenceQrImage;
   vaccineSelect.innerHTML = `<option value="">Select vaccine</option>${vaccines
     .map((vaccine) => `<option value="${escapeHtml(vaccine.id)}">${escapeHtml(vaccine.name)}</option>`)
@@ -269,12 +269,15 @@ paymentModeSelect.addEventListener("change", () => {
   if (paymentModeSelect.value === "UPI ID") {
     upiIdContainer.classList.remove("hidden");
     paymentQrBlock.classList.add("hidden");
+    downloadPaymentQr.classList.add("hidden");
   } else if (paymentModeSelect.value === "QR Code") {
     upiIdContainer.classList.add("hidden");
     paymentQrBlock.classList.remove("hidden");
+    downloadPaymentQr.classList.remove("hidden");
   } else {
     upiIdContainer.classList.add("hidden");
     paymentQrBlock.classList.add("hidden");
+    downloadPaymentQr.classList.add("hidden");
   }
 });
 
