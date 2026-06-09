@@ -26,6 +26,23 @@ let activePassword = "";
 let currentRecords = [];
 let currentScreenshotRecord = null;
 let activeFilter = "all";
+let adminPollInterval = null;
+
+function startAdminPolling() {
+  if (adminPollInterval) clearInterval(adminPollInterval);
+  adminPollInterval = setInterval(async () => {
+    try {
+      await loadAdminRecords();
+    } catch (e) {
+      console.error("Admin poll error:", e);
+    }
+  }, 10000); // 10 seconds
+}
+
+function stopAdminPolling() {
+  if (adminPollInterval) clearInterval(adminPollInterval);
+  adminPollInterval = null;
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -269,6 +286,7 @@ adminForm.addEventListener("submit", async (event) => {
 
   try {
     await loadAdminRecords();
+    startAdminPolling();
     sessionStorage.setItem("adminPassword", activePassword);
     adminDashboardShell.classList.remove("hidden");
     adminLoginWrapper.classList.add("hidden");
@@ -336,6 +354,7 @@ adminLogoutButton.addEventListener("click", () => {
   sessionStorage.removeItem("adminPassword");
   activePassword = "";
   adminPassword.value = "";
+  stopAdminPolling();
   adminDashboardShell.classList.add("hidden");
   adminLoginWrapper.classList.remove("hidden");
   adminMessage.textContent = "Logged out successfully.";
@@ -349,6 +368,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     adminMessage.textContent = "Loading admin panel...";
     try {
       await loadAdminRecords();
+      startAdminPolling();
       adminDashboardShell.classList.remove("hidden");
       adminLoginWrapper.classList.add("hidden");
       adminMessage.textContent = "Admin panel unlocked.";

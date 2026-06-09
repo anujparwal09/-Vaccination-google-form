@@ -134,7 +134,10 @@ function updatePaymentForVaccine() {
   paymentQrImage.src = `/api/qr?amount=${vaccine.price}`;
 }
 
-function updateRegistrationStatusUI(status, regId) {
+function updateRegistrationStatusUI(record) {
+  const status = record.paymentStatus;
+  const regId = record.registrationId;
+  
   resultPayment.textContent = status;
   resultStatus.textContent = status;
 
@@ -155,7 +158,7 @@ function updateRegistrationStatusUI(status, regId) {
 
   if (status === "Rejected") {
     resultBannerTitle.textContent = "Payment Verification Rejected";
-    resultBannerText.textContent = "Your payment screenshot was rejected by the admin. Please contact the organizer or submit a corrected registration.";
+    resultBannerText.textContent = `Your payment screenshot was rejected by the admin. Reason: ${record.rejectionReason || 'No reason provided'}. Please contact the organizer.`;
     resultBanner.style.borderColor = "rgba(225, 29, 72, 0.4)";
     resultBanner.style.backgroundColor = "#fff1f2";
     receiptLink.classList.add("hidden");
@@ -174,7 +177,7 @@ function showCurrentRegistration(record) {
   resultName.textContent = record.fullName;
   resultEmpty.classList.add("hidden");
   resultCard.classList.remove("hidden");
-  updateRegistrationStatusUI(record.paymentStatus, record.registrationId);
+  updateRegistrationStatusUI(record);
   if (record.paymentStatus === "Pending Verification") startStatusPolling(record.registrationId);
 }
 
@@ -253,7 +256,7 @@ function startStatusPolling(regId) {
     try {
       const record = await fetchRegistration(regId);
       if (!record) return;
-      if (registrationId.textContent === regId) updateRegistrationStatusUI(record.paymentStatus, regId);
+      if (registrationId.textContent === regId) updateRegistrationStatusUI(record);
       await loadBrowserRegistrations();
       if (record.paymentStatus === "Approved" || record.paymentStatus === "Rejected") {
         clearInterval(activeStatusPoll);
@@ -305,7 +308,10 @@ browserRegistrationsList.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-registration-id]");
   if (!button) return;
   const record = await fetchRegistration(button.dataset.registrationId);
-  if (record) showCurrentRegistration(record);
+  if (record) {
+    showCurrentRegistration(record);
+    loadBrowserRegistrations(); // Refresh list to sync status
+  }
 });
 
 form.addEventListener("submit", async (event) => {
