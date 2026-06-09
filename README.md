@@ -25,8 +25,6 @@ $env:PAYMENT_PAYEE_NAME="Payee Name"
 npm.cmd start
 ```
 
-Use `.env.example` as the reference for supported environment variables.
-
 Open:
 
 ```text
@@ -67,6 +65,10 @@ Use this if you want a permanent public link such as `https://your-app.onrender.
 Important: keep the persistent disk enabled. Without it, registrations, payment screenshots, and Excel data can be lost after redeploys.
 
 The repository `.gitignore` excludes runtime data, uploads, Excel exports, logs, local environment files, and `node_modules/`.
+
+## Vercel Note
+
+This project uses an Express server, local JSON storage, uploaded payment screenshots, and generated Excel files. Vercel is not the right deployment target for this exact setup unless the storage layer is rebuilt to use a database and cloud file storage. Render with a persistent disk is the recommended deployment path for the current codebase.
 
 ## Manual Render Settings
 
